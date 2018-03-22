@@ -30,6 +30,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'json_spec'
 end
 
 group :development do
