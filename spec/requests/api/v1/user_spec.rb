@@ -19,3 +19,39 @@ describe User do
     end
   end
 end
+
+describe 'Remote api request to sign_up' do
+  it 'should create user' do
+    user =  {:user => {:email => 'user@test.com', :password => 'test123', :password_confirmation => 'test123', :first_name => "Steve", :last_name => "Richert"} }
+    post '/api/v1/sign_up', :params => user
+    expect(response).to have_http_status(200)
+    json = JSON.parse(response.body)
+    expect(json).not_to be_empty
+    expect(json["messages"]).to eq("Signed Up successfully")
+    expect(json["is_success"]).to eq(true)
+    expect(json["data"].keys).to contain_exactly('user')
+    expect(json["data"]["user"].keys).to contain_exactly('id', 'created_at', 'updated_at', 'first_name', 'last_name', 'email','authentication_token')
+    expect(json["data"]["user"]["first_name"]).to eq("Steve")
+    expect(json["data"]["user"]["last_name"]).to eq("Richert")
+    expect(json["data"]["user"]["email"]).to eq("user@test.com")
+    expect(json["data"]["user"]["authentication_token"]).to be_a(String)
+  end
+end
+describe 'Remote api request to sign_in' do
+  it 'should return user data' do
+    user =  {:user => {:email => 'user@test.com', :password => 'test123', :password_confirmation => 'test123', :first_name => "Steve", :last_name => "Richert"} }
+    post '/api/v1/sign_up', :params => user
+    expect(response).to have_http_status(200)
+    authentication_token = JSON.parse(response.body)["data"]["user"]["authentication_token"]
+    post '/api/v1/sign_in', :params => {:sign_in => { :email => 'user@test.com', :password => 'test123'} }
+    expect(response).to have_http_status(200)
+  end
+end  
+
+
+
+
+
+
+
+
