@@ -6,17 +6,17 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-#User.create! email: "dan@wp.pl",
-#    password: "123qwe",
-#    first_name: "daniel",
-#    last_name: "kukula"
-#
-#29.times do |n|
-#    User.create! email: Faker::Internet.email,
-#        password: "123qwe",
-#        first_name: Faker::Name.first_name,
-#        last_name: Faker::Name.last_name
-#end
+User.create! email: "dan@wp.pl",
+    password: "123qwe",
+    first_name: "daniel",
+    last_name: "kukula"
+
+29.times do |n|
+    User.create! email: Faker::Internet.email,
+        password: "123qwe",
+        first_name: Faker::Name.first_name,
+        last_name: Faker::Name.last_name
+end
 
 80.times do |n|
     Task.create! title: Faker::Book.title,
