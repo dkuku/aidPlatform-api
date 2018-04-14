@@ -10,18 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180323031140) do
+ActiveRecord::Schema.define(version: 20180413031419) do
 
   create_table "tasks", force: :cascade do |t|
     t.string "title"
     t.text "description"
     t.decimal "lat"
     t.decimal "lng"
-    t.boolean "status"
-    t.integer "fulfilment_counter"
+    t.boolean "done", default: false
+    t.integer "fulfilment_counter", default: 0
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "task_type"
+    t.boolean "status"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
@@ -42,6 +44,10 @@ ActiveRecord::Schema.define(version: 20180323031140) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "authentication_token", limit: 30
+    t.string "picture_file_name"
+    t.string "picture_content_type"
+    t.integer "picture_file_size"
+    t.datetime "picture_updated_at"
     t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

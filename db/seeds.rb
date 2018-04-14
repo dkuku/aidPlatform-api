@@ -20,8 +20,11 @@ end
 
 80.times do |n|
     Task.create! title: Faker::Book.title,
-        description: Faker::Lorem.paragraph(5, true, 5),
+        description: Faker::Lorem.paragraph(1, true, 4),
         lat: Faker::Number.normal(51.5, 0.1),
         lng: Faker::Number.normal(-0.2, 0.2),
-        user_id: Faker::Number.between(1,10)
+        user_id: Faker::Number.between(1,10),
+        task_type: ["material", "help"].sample,
+        done: Faker::Boolean.boolean,
+        fulfilment_counter: Faker::Number.between(0,5)
 end

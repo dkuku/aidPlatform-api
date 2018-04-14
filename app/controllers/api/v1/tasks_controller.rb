@@ -16,7 +16,7 @@ class Api::V1::TasksController < ApplicationController
         if task.save
             json_response "Created task successfully", true, {task: task}, :ok
         else
-            json_response "Created task failed", false, {}, :unprocessable_entity
+            json_response task.errors.full_messages.first, false, {}, :unprocessable_entity
         end
     end
 
@@ -55,6 +55,6 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
-        params.require(:task).permit :title, :description, :lat, :lng
+        params.require(:task).permit :title, :description, :lat, :lng, :task_type
     end
 end
