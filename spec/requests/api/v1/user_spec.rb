@@ -6,7 +6,7 @@ describe User do
   context "#to_json" do
     it "includes required params" do
       params = %({"email":"user@test.com", "first_name":"Steve", "last_name":"Richert"})
-      expect(user.to_json).to be_json_eql(params).excluding("authentication_token")
+      expect(user.to_json).to be_json_eql(params).excluding("authentication_token", 'picture_content_type', 'picture_file_name', 'picture_file_size', 'picture_updated_at')
     end
 
     it "includes the ID" do
@@ -30,7 +30,7 @@ describe 'Remote api request to sign_up' do
     expect(json["messages"]).to eq("Signed Up successfully")
     expect(json["is_success"]).to eq(true)
     expect(json["data"].keys).to contain_exactly('user')
-    expect(json["data"]["user"].keys).to contain_exactly('id', 'created_at', 'updated_at', 'first_name', 'last_name', 'email','authentication_token')
+    expect(json["data"]["user"].keys).to contain_exactly('id', 'created_at', 'updated_at', 'first_name', 'last_name', 'email','authentication_token','picture_content_type', 'picture_file_name', 'picture_file_size', 'picture_updated_at')
     expect(json["data"]["user"]["first_name"]).to eq("Steve")
     expect(json["data"]["user"]["last_name"]).to eq("Richert")
     expect(json["data"]["user"]["email"]).to eq("user@test.com")
