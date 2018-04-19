@@ -35,6 +35,10 @@ group :development, :test do
   gem 'json_spec'
   gem 'rack-test'
   gem 'faker'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers', '~> 3.1'
+  gem 'zeus', '~> 0.15.15.pre'
+
 end
 
 group :development do
@@ -52,3 +56,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'devise', '>= 4.4'
 gem 'simple_token_authentication', '~> 1.0'
+gem 'redis'
+
