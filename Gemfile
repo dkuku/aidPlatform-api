@@ -20,6 +20,7 @@ gem 'puma', '~> 3.7'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+  gem 'faker'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 # Use paperclop for images
@@ -56,5 +57,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'devise', '>= 4.4'
 gem 'simple_token_authentication', '~> 1.0'
+<<<<<<< HEAD
 gem 'redis'
 
+=======
+
+ruby '2.5.0'
+>>>>>>> 0adafa585d65a9a8c017bc1dc435e4406b5abc0b
