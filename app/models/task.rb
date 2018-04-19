@@ -4,8 +4,7 @@ class Task < ApplicationRecord
   allowed_types = ['material', 'help']
   
   belongs_to :user
-  validates_presence_of :title, :description, :lat, :lng, :user_id, :task_type,
-  {  message: "missing parameter" }
+  validates_presence_of :title, :description, :lat, :lng, :user_id, :task_type
 
 	validates :title, length: { in: 2...50, 
   message: "title must be between 2 and 50 letters"  }
