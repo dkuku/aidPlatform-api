@@ -11,7 +11,7 @@
           "server": ["s"],
           "generate": ["g"],
           "destroy": ["d"],
-          "dbconsole": []
+          "dbconsole": ["db"]
         },
         "test_environment": {
           "test_helper": {"test": ["rspec", "testrb"]}

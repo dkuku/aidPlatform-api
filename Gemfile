@@ -38,6 +38,7 @@ group :development, :test do
   gem 'faker'
   gem 'factory_bot_rails'
   gem 'shoulda-matchers', '~> 3.1'
+  gem 'json_matchers'
   gem 'zeus', '~> 0.15.15.pre'
 
 end
@@ -57,10 +58,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'devise', '>= 4.4'
 gem 'simple_token_authentication', '~> 1.0'
-<<<<<<< HEAD
 gem 'redis'
 
-=======
-
-ruby '2.5.0'
->>>>>>> 0adafa585d65a9a8c017bc1dc435e4406b5abc0b
+ruby '2.5.1'
