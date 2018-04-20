@@ -59,6 +59,7 @@ RSpec.configure do |config|
   require 'support/factory_bot'
   require 'support/request_helpers'
   require 'shoulda/matchers'
+  require 'json_matchers/rspec'
   config.include Requests::JsonHelpers, type: :request
 
   Shoulda::Matchers.configure do |config|
@@ -76,5 +77,7 @@ RSpec.configure do |config|
     # Or, choose the following (which implies all of the above):
     with.library :rails
     end
+    JsonMatchers.schema_root = "/spec/support/api/schemas"
+
   end
 end

@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :task, class: Task do
-    title "first test task"
-    description "first test task body"
+    title "title"
+    description "body"
     lat 51.52
     lng 0.1
     user_id 1
