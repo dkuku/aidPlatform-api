@@ -1,25 +1,16 @@
 require 'rails_helper'
 
 describe Conversation do 
-  describe "creation" do
-    before do
-      let(:Creator){ User.create!(email: 'user1@test.com', password: 'test123', password_confirmation: 'test123',first_name: "Steve", last_name: "Richert") }
-      let(:Volunteer){ User.create!(email: 'user2@test.com', password: 'test123', password_confirmation: 'test123',first_name: "Steve", last_name: "Richert") }
-      let(:Task){Task.create!(title: "title",
-        description: "task body",
-        lat: 1,
-        lng: 2,
-        user_id: 1,
-        task_type: "material",
-      )} 
+  context "creation" do
+    it "returns all required parameters" do
+      user1 = create(:user)
+      user2 = create(:random_user)
+      task1 = create(:task)
+      conv = create(:conversation).to_json
+      expect(conv).to have_json_path("sender_id")
+      expect(conv).to have_json_type(Integer).at_path("sender_id")
+      expect(conv).to have_json_path("task_id")
+      expect(conv).to have_json_type(Integer).at_path("task_id")
     end
-    let(:Conversation){ Conversation.create!(task_id: 1)}
   end
 end
-
-
-
-
-
-
-
