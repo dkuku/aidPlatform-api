@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: :json} do
     namespace :v1 do
       get '/tasks/:task_id/conversations/',:type => 'task', to: 'conversations#index'
+      post '/tasks/:task_id/conversations/messages', to: 'messages#create'
+      get '/tasks/:task_id/conversations/messages', to: 'conversations#index'
       devise_scope :user do
         post 	'sign_up', to: 'registrations#create'
         post 	'sign_in', to: 'sessions#create'
@@ -16,5 +18,5 @@ Rails.application.routes.draw do
       resources :conversations, only: [:index, :create, :destroy], :type => 'all'
     end
   end
-  mount ActionCable.server, at: '/cable'
+  mount ActionCable.server, at: '/stats'
 end

@@ -27,4 +27,5 @@ class Task < ApplicationRecord
     less_than_or_equal_to: 1,
     message: "we currently doni't work in this neighborhood"}
 
+  after_create_commit { TaskBroadcastJob.perform_later(self) }
 end
