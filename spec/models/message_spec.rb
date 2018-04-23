@@ -11,8 +11,11 @@ describe Message, type: :model do
 
   end
 
-  describe '#user_id' do
-    it { should validate_presence_of(:user_id) }
+  describe '#volunteer_id' do
+    it { should validate_presence_of(:volunteer_id) }
+  end
+  describe '#task_owner_id' do
+    it { should validate_presence_of(:task_owner_id) }
   end
   describe '#conversation_id' do
     it { should validate_presence_of(:conversation_id) }

@@ -9,6 +9,17 @@ FactoryBot.define do
     done false
     fulfilment_counter 0
   end
+  factory :task1, class: Task do
+    title "title"
+    description "body"
+    lat 51.52
+    lng 0.1
+    user_id 1
+    task_type "material"
+    done false
+    fulfilment_counter 0
+  end
+
   factory :task_done, class: Task do
     title "first test task"
     description "first test task body"
