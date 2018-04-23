@@ -30,6 +30,7 @@ class Api::V1::TasksController < ApplicationController
         else
             json_response "You dont have permission to do this", false, {}, :unauthorized
         end
+
     end
 
     def destroy

@@ -2,42 +2,56 @@ class Api::V1::ConversationsController < ApplicationController
   before_action :authenticate_with_token!, only: [:create, :index, :destroy]
 
   def create
-    sender_id = current_user.id
-    #check if conversation exist if yes load it
-    if Conversation.between(sender_id, conv_params[:task_id]).present?
-      conversation = Conversation.between(sender_id, conv_params[:task_id].first)
-      json_response "Conversation found", true, {conversation: conversation, sender: Message.where(user_id: current_user.id), recipient: Message.where(task_id: conv_params[:task_id]) }, :ok
-      #if not check if user dont volunteer on his own task
-    elsif Task.where(user_id: current_user.id).first.user_id == current_user.id
-        json_response "You can't Volunteer on your own request", false, {}, :unprocessable_entity
-    else
-      #create conversation
-      conversation = Conversation.new conv_params
-      conversation.sender_id = current_user.id
-      if conversation.save
-        json_response "Conversation created", true, {conversation: conversation, sender:{}, recipient: {}  }, :ok
+    volunteer_id = current_user.id
+    task_id = conv_params[:task_id]
+    #check if task exist
+    if Task.find(task_id).present?
+      task_user_id = Task.find(task_id).user_id
+      #check if conversation exist if yes load it
+      if Conversation.between(volunteer_id, conv_params[:task_id]).present?
+        conversation = Conversation.between(volunteer_id, task_user_id).first
+        json_response "Conversation found", true, {conversation: {messages: Message.where(conversation_id: conversation.id)}}, :ok
+        #if not check if user dont volunteer on his own task
+      elsif Task.find(task_id).user_id == current_user.id
+          json_response "You can't Volunteer on your own request", false, {}, :unprocessable_entity
       else
-        json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
+        #create conversation
+        conversation = Conversation.new conv_params
+        conversation.volunteer_id = volunteer_id
+        conversation.task_owner_id = task_user_id
+        if conversation.save
+          json_response "Conversation created", true, {conversation: {
+                            volunteer:{}, task_user: {}  }}, :ok
+        else
+          json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
+        end
       end
+    else
+      json_response "Not fount task with this id", false, {}, :not_found
     end
   end
-end
 
 
   def index
-    puts params
-    @type=params[:type]
-    #we can have to routes /task/:id/conversation - showing index for 1 task
-    if @type == 'task'
-      @conversation_sender = Conversation.where(sender_id: current_user.id, task_id: params[:task_id])
-      @conversation_recipient = Conversation.joins(:task).where(tasks: {user_id: current_user.id, id: params[:task_id]})
-    else
-      #/conversation showing all tasks
-      @conversation_sender = Conversation.where(sender_id: current_user.id)
-      @conversation_recipient = Conversation.joins(:task).where(tasks: {user_id: current_user.id})
-    end
-    json_response "Users conversations", true, {sender: @conversation_sender, recipient: @conversation_recipient  }, :ok
+    if current_user.present?
+      if params["task_id"].present?
+       if params["conversation_id"].present?
+         if Conversation.find(params["conversation_id"]).task_owner_id == current_user.id || Conversation.find(params["conversation_id"]).volunteer_id == current_user.id
+           json_response "Messages in this conversation", true, { task: params["task_id"], messages: Message.where(conversation_id: params["conversation_id"], task_id: params["task_id"])}, :ok
+         else
+           json_response "You are not allowed to view this conversation", false, {}, :not_found
+         end
+       elsif Task.find(params["task_id"]).user_id == current_user.id
+         json_response "Conversations for this task", true, {conversations: Conversation.where(task_id: params["task_id"])}, :ok
+       else
+         puts Task.find(params['task_id']).to_json
+         json_response "You are not the owner of this task", false, {}, :not_found
+       end
+     end
+  else
+    json_response "You Need to log in to vieew conversations", false, {}, :unauthenticated
   end
+end
 
   private
   def conv_params

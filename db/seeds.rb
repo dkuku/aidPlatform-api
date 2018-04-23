@@ -11,13 +11,28 @@ User.create! email: "dan@wp.pl",
     first_name: "daniel",
     last_name: "kukula"
 
-29.times do |n|
+User.create! email: "mark@wp.pl",
+    password: "123qwe",
+    first_name: "Mark",
+    last_name: "Tester"
+
+28.times do |n|
     User.create! email: Faker::Internet.email,
         password: "123qwe",
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name
 end
 
+10.times do |n|
+    Task.create! title: Faker::Book.title,
+        description: Faker::Lorem.paragraph(1, true, 4),
+        lat: Faker::Number.normal(51.5, 0.1),
+        lng: Faker::Number.normal(-0.2, 0.2),
+        user_id: [1,2].sample,
+        task_type: ["material", "help"].sample,
+        done: Faker::Boolean.boolean,
+        fulfilment_counter: Faker::Number.between(0,5)
+end
 80.times do |n|
     Task.create! title: Faker::Book.title,
         description: Faker::Lorem.paragraph(1, true, 4),
