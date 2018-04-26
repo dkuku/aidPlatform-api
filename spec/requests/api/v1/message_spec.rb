@@ -16,3 +16,4 @@ describe Message do
       expect(message).to have_json_type(String).at_path("body")
     end
   end
+end
