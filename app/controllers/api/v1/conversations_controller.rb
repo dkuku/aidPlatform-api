@@ -36,13 +36,15 @@ class Api::V1::ConversationsController < ApplicationController
     if current_user.present?
       if params["task_id"].present?
        if params["conversation_id"].present?
-         if Conversation.find(params["conversation_id"]).task_owner_id == current_user.id || Conversation.find(params["conversation_id"]).volunteer_id == current_user.id
+           if Conversation.find(params["conversation_id"]).task_owner_id == current_user.id || Conversation.find(params["conversation_id"]).volunteer_id == current_user.id
            json_response "Messages in this conversation", true, { task: params["task_id"], messages: Message.where(conversation_id: params["conversation_id"], task_id: params["task_id"])}, :ok
          else
            json_response "You are not allowed to view this conversation", false, {}, :not_found
          end
        elsif Task.find(params["task_id"]).user_id == current_user.id
-         json_response "Conversations for this task", true, {conversations: Conversation.where(task_id: params["task_id"])}, :ok
+           json_response "Conversations for this task", true, {conversations: Conversation.where(task_id: params["task_id"]).joins("JOIN users ON volunteer_id = users.id").select('users.first_name, users.last_name, conversations.task_id, conversations.id')}, :ok
+       elsif Conversation.find(params["task_id"]).volunteer_id == current_user.id
+           json_response "Conversations for this task", true, {conversations: Conversation.where(task_id: params["task_id"]).joins("JOIN users ON task_owner_id = users.id").select('users.first_name, users.last_name, conversations.task_id, conversations.id')}, :ok
        else
          puts Task.find(params['task_id']).to_json
          json_response "You are not the owner of this task", false, {}, :not_found
