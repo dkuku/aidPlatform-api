@@ -1,6 +1,7 @@
 class Conversation < ApplicationRecord
-  belongs_to :volunteer, :class_name => "User"
-  belongs_to :task_owner, :class_name => "User"
+
+  belongs_to :task_owner, :class_name => 'User', foreign_key: "volunteer_id"
+  belongs_to :volunteer, :class_name => 'User',  foreign_key: "task_owner_id"
   belongs_to :task, class_name: 'Task'
   has_many :messages, dependent: :destroy
   validates_presence_of :volunteer_id, :task_id

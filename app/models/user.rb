@@ -5,6 +5,8 @@ class User < ApplicationRecord
 
   has_many :tasks, dependent: :destroy
   has_many :messages
+  has_many :conversations, :foreign_key => 'volunteer_id'
+  has_many :conversations, :foreign_key => 'task_owner_id'
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
