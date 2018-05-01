@@ -48,15 +48,13 @@ class Api::V1::ConversationsController < ApplicationController
        elsif Task.find(params["task_id"]).user_id == current_user.id
            json_response "Conversations for this task",
            true,
-           {conversations: Conversation.where(task_id: params["task_id"]) .joins(:volunteer)
-            .select('volunteer.first_name, volunteer.last_name, conversations.task_id, conversations.id, ')},
+           {conversations: Conversation.where(task_id: params["task_id"]).joins(:volunteer).select('users.first_name as volunteer_first_name, users.last_name as volunteer_last_name, conversations.task_id, conversations.id').joins(:task_owner).select('users.first_name as owner_first_name, users.last_name as owner_last_name, conversations.task_id, conversations.id')},
             :ok
 
        elsif Conversation.find(params["task_id"]).volunteer_id == current_user.id
            json_response "Conversations for this task",
            true,
-           {conversations: Conversation.where(task_id: params["task_id"], volunteer_id:  current_user.id) .joins(:task_owner)
-            .select('users.first_name, users.last_name, conversations.task_id, conversations.id')},
+           {conversations: Conversation.where(task_id: params["task_id"], volunteer_id:  current_user.id).joins(:task_owner).select('users.first_name as owner_first_name, users.last_name as owner_last_name, conversations.task_id, conversations.id').joins(:volunteer).select('users.first_name as volunteer_first_name, users.last_name as volunteer_last_name, conversations.task_id, conversations.id')},
             :ok
        
           else

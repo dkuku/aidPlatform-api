@@ -13,8 +13,8 @@
 ActiveRecord::Schema.define(version: 20180417225852) do
 
   create_table "conversations", force: :cascade do |t|
-    t.integer "volunteer_id"
     t.integer "task_owner_id"
+    t.integer "volunteer_id"
     t.integer "task_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

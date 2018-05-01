@@ -33,7 +33,7 @@ end
     task_type: "material",
     done: false
     (0..3).each do |conver|
-        Conversation.create(volunteer_id: conver+ counter+1 , task_owner_id:counter, task_id: counter)
+        Conversation.create(volunteer_id: conver+ counter+1 , task_owner_id: counter, task_id: counter)
         8.times do |message|
             Message.create!(conversation_id: counter + conver ,
             body:Faker::Lorem.word, 
