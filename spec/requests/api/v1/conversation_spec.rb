@@ -21,7 +21,7 @@ describe 'Remote api request to conversation' do
   it 'should not allow to create task when unauthenticated' do
 
     conversation = attributes_for(:conversation)
-    post '/api/v1/tasks/1/conversations', :params => {conversation: conversation}
+    post '/api/v1/conversations', :params => {conversation: conversation}
     expect(response).to have_http_status(401)
     json = JSON.parse(response.body)
     expect(json["messages"]).to eq("Unauthenticated")
@@ -35,11 +35,11 @@ describe 'Remote api request to conversation' do
     conversation = attributes_for(:conversation)
     token = JSON.parse(user1)["authentication_token"]
     headers = {'AUTH-TOKEN': token}
-    post '/api/v1/tasks/1/conversations', :params => {conversation: conversation}, :headers => headers
+    post '/api/v1/conversations', :params => {conversation: conversation}, :headers => headers
     expect(response).to have_http_status(422)
     json = JSON.parse(response.body)
     expect(json).not_to be_empty
-    expect(json["messages"]).to eq("You can't Volunteer on your own request")
+    expect(json["messages"]).to eq("You can't volunteer on your own request")
  end
 
   it 'should create conversation when proper header is send' do
@@ -49,26 +49,26 @@ describe 'Remote api request to conversation' do
     conversation = attributes_for(:conversation)
     token = JSON.parse(user2)["authentication_token"]
     headers = {'AUTH-TOKEN': token}
-    post '/api/v1/tasks/1/conversations', :params => {conversation: conversation}, :headers => headers
+    post '/api/v1//conversations', :params => {conversation: conversation}, :headers => headers
     expect(response).to have_http_status(200)
     json = JSON.parse(response.body)
     expect(json).not_to be_empty
-    expect(json["messages"]).to eq("Conversation created")
+    expect(json["messages"]).to eq("Messages in this conversation")
 
-    post '/api/v1/tasks/1/conversations', :params => {conversation: conversation}, :headers => headers
-    expect(response).to have_http_status(200)
-    json = JSON.parse(response.body)
-    expect(json).not_to be_empty
-    expect(json["messages"]).to eq("Conversation found")
-    expect(json["is_success"]).to eq(true)
-    expect(json["data"].keys).to contain_exactly('conversation')
-
-    get '/api/v1/tasks/1/conversations/1/', :headers => headers
+    post '/api/v1/conversations', :params => {conversation: conversation}, :headers => headers
     expect(response).to have_http_status(200)
     json = JSON.parse(response.body)
     expect(json).not_to be_empty
     expect(json["messages"]).to eq("Messages in this conversation")
     expect(json["is_success"]).to eq(true)
-    expect(json["data"].keys).to contain_exactly('task', 'messages')
+    expect(json["data"].keys).to contain_exactly('messages')
+
+    get '/api/v1/conversations/1/', :headers => headers
+    expect(response).to have_http_status(200)
+    json = JSON.parse(response.body)
+    expect(json).not_to be_empty
+    expect(json["messages"]).to eq("Messages in this conversation")
+    expect(json["is_success"]).to eq(true)
+    expect(json["data"].keys).to contain_exactly('messages')
   end
 end

@@ -11,6 +11,10 @@ class Api::V1::ConversationsController < ApplicationController
       conversation = Conversation.between(volunteer_id, task_id).first
       messages_response(conversation.id)
       #if not check if user dont volunteer on his own task
+    elsif
+      task_user_id == volunteer_id
+      json_response "You can't volunteer on your own request", false, {}, :unprocessable_entity
+
     else
       #create conversation
       conversation = Conversation.new conv_params
