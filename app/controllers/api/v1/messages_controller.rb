@@ -5,15 +5,13 @@ class Api::V1::MessagesController < ApplicationController
     puts params
     user_id = current_user.id
     conv_id = params[:conversation_id]
-    #check if conversation exist and it belongs to user or task belongs to user
+    #check if conversation exist and it 
     if Conversation.find( conv_id).present?
-        #conv = JSON.parse(Conversation.find(conv_id).to_json)
         conv = Conversation.find(conv_id)
         if  conv.volunteer_id == user_id || conv.task_owner_id == user_id
             message = Message.new
             message.body = message_params["body"]
             message.conversation_id = conv_id
-            message.task_id = conv.task_id
             message.task_owner_id = conv.task_owner_id
             message.volunteer_id = conv.volunteer_id
             if conv.task_owner_id == user_id

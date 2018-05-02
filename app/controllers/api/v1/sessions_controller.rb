@@ -1,7 +1,7 @@
 class Api::V1::SessionsController < Devise::SessionsController
   before_action :sign_in_params, only: :create
   before_action :load_user, only: :create
-  before_action :valid_token, only: :destroy
+  before_action :valid_token, only: [:update, :destroy]
   skip_before_action :verify_signed_out_user, only: :destroy
   #sign in
   def create
@@ -17,6 +17,16 @@ class Api::V1::SessionsController < Devise::SessionsController
 	sign_out @user
 	json_response "Log out successfully", true, {}, :ok
   end
+  
+  def update
+    puts user_params
+    @user.update user_params
+    if @user.valid? && @user.save
+      json_response "Updated user data", true, {user: @user}, :ok
+    else
+      json_response "Unauthorized", false, {}, :unauthorized 
+    end
+  end
 
   private
   def sign_in_params
@@ -30,6 +40,10 @@ class Api::V1::SessionsController < Devise::SessionsController
     else
       json_response "Cannot get User", false, {}, :failure
     end
+  end
+
+  def user_params
+    params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, :picture)
   end
 
   def valid_token

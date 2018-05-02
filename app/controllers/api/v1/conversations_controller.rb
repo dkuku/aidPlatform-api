@@ -4,10 +4,12 @@ class Api::V1::ConversationsController < ApplicationController
   def create
     volunteer_id = current_user.id
     task_id = conv_params[:task_id]
+    task = Task.find task_id
+    task_user_id = task.user_id
     #check if conversation exist if yes load it
     if Conversation.between(volunteer_id, conv_params[:task_id]).present?
-      conversation = Conversation.between(volunteer_id, task_user_id).first
-      json_response "Conversation found", true, {conversation: {messages: Message.where(conversation_id: conversation.id)}}, :ok
+      conversation = Conversation.between(volunteer_id, task_id).first
+      messages_response(conversation.id)
       #if not check if user dont volunteer on his own task
     else
       #create conversation
@@ -17,8 +19,7 @@ class Api::V1::ConversationsController < ApplicationController
       if conversation.save
         #increase fulfilment counter
         Task.find(task_id).increment(:fulfilment_counter)
-        json_response "Conversation created", true, {conversation: {
-                          volunteer:{}, task_user: {}  }}, :ok
+        messages_response(conversation.id)
       else
         json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
       end
@@ -30,7 +31,7 @@ class Api::V1::ConversationsController < ApplicationController
     if current_user.present?
       if params["conversation_id"].present?
         if Conversation.find(params["conversation_id"]).task_owner_id == current_user.id || Conversation.find(params["conversation_id"]).volunteer_id == current_user.id
-          json_response "Messages in this conversation", true, { messages: Message.where(conversation_id: params["conversation_id"])}, :ok
+          messages_response(params["conversation_id"])
         else
          json_response "You are not allowed to view this conversation", false, {}, :not_found
         end
@@ -42,7 +43,11 @@ class Api::V1::ConversationsController < ApplicationController
 
   private
   def conv_params
-      params.require(:conversation).permit :conversation_id
+      params.require(:conversation).permit :task_id
+  end
+
+  def messages_response(id)
+    json_response "Messages in this conversation", true, { messages: Message.where(conversation_id: id)}, :ok
   end
 end
 
