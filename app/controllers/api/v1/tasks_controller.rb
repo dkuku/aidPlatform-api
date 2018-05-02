@@ -8,7 +8,6 @@ class Api::V1::TasksController < ApplicationController
 
     def show
         json_response "Show task successfully", true, {task: @task, conversations: @task.conversations.includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
-        #json_response "Show task successfully", true, {task: @task, conversations: @task.conversations.includes([:task_owner, :volunteer]).as_json(only: [id], method_names: [:task_ownerfirst_name, :volunteer.first_name])}, :ok
     end
 
     def create
