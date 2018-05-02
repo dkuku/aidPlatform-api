@@ -39,4 +39,8 @@ class User < ApplicationRecord
 	token = User.generate_unique_secure_token
     update_attributes authentication_token: token
   end
+
+  def name
+    [first_name, last_name].join(' ')
+  end
 end

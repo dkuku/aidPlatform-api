@@ -8,6 +8,6 @@ class Conversation < ApplicationRecord
   validates_uniqueness_of :volunteer_id, :scope => :task_id
   scope :between, ->(volunteer_id, task_id) {where(volunteer_id: volunteer_id, task_id: task_id)}
 
-  delegate :first_name, :last_name, to: :task_owner
-  delegate :first_name, :last_name, to: :volunteer
+  delegate :name, to: :task_owner, prefix: true
+  delegate :name, to: :volunteer, prefix: true
 end
