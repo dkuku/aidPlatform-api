@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       end
 
       resources :tasks, only: [:index, :show, :create, :update, :destroy] 
-      resources :conversations, only: [:show, :create, :destroy]
+      resources :conversations, only: [:index, :show, :create, :destroy]
     end
   end
   mount ActionCable.server, at: '/stats'
