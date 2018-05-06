@@ -53,7 +53,7 @@ describe 'Remote api request to conversation' do
     expect(response).to have_http_status(200)
     json = JSON.parse(response.body)
     expect(json).not_to be_empty
-    expect(json["messages"]).to eq("Messages in this conversation")
+    expect(json["messages"]).to eq("You can now contact the task Creator")
 
     post '/api/v1/conversations', :params => {conversation: conversation}, :headers => headers
     expect(response).to have_http_status(200)

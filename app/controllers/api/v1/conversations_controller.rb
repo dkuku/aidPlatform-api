@@ -1,7 +1,8 @@
 class Api::V1::ConversationsController < ApplicationController
   before_action :authenticate_with_token!, only: [:create, :index, :destroy]
+  before_action :load_task, only: :create
 
-  def create
+  def show
     volunteer_id = current_user.id
     task_id = conv_params[:task_id]
     task = Task.find task_id
@@ -10,26 +11,38 @@ class Api::V1::ConversationsController < ApplicationController
     if Conversation.between(volunteer_id, conv_params[:task_id]).present?
       conversation = Conversation.between(volunteer_id, task_id).first
       messages_response(conversation.id)
-      #if not check if user dont volunteer on his own task
-    elsif
-      task_user_id == volunteer_id
-      json_response "You can't volunteer on your own request", false, {}, :unprocessable_entity
-
     else
-      #create conversation
-      conversation = Conversation.new conv_params
-      conversation.volunteer_id = volunteer_id
-      conversation.task_owner_id = task_user_id
-      if conversation.save
-        #increase fulfilment counter
-        Task.find(task_id).increment(:fulfilment_counter)
-        messages_response(conversation.id)
-      else
-        json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
-      end
+      #if not check if user dont volunteer on his own task
+      json_response "Error finding conversation", false, {}, :not_found
     end
-  end
+  end 
 
+  def create
+    volunteer_id = current_user.id
+    task_id = conv_params[:task_id]
+    task = Task.find task_id
+    task_user_id = task.user_id
+    if Conversation.between(volunteer_id, conv_params[:task_id]).present?
+      conversation = Conversation.between(volunteer_id, task_id).first
+      messages_response(conversation.id)
+    else
+      if task_user_id == volunteer_id
+        json_response "You can't volunteer on your own request", false, {}, :unprocessable_entity
+      else
+        #create conversation
+        conversation = Conversation.new conv_params
+        conversation.volunteer_id = volunteer_id
+        conversation.task_owner_id = task_user_id
+        if conversation.save
+          #increase fulfilment counter
+          @task.increment(:fulfilment_counter)
+          json_response "You can now contact the task Creator", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
+        else
+          json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
+        end
+      end
+   end
+end
 
   def index
     if current_user.present?
@@ -41,7 +54,7 @@ class Api::V1::ConversationsController < ApplicationController
         end
       end
     else
-      json_response "You Need to log in to vieew conversations", false, {}, :unauthenticated
+      json_response "You Need to log in to view conversations", false, {}, :unauthenticated
     end
   end
 
@@ -55,3 +68,9 @@ class Api::V1::ConversationsController < ApplicationController
   end
 end
 
+def load_task
+  @task = Task.find_by id: conv_params[:task_id]
+  unless @task.present?
+      json_response "Cannot find task", false, {}, :not_found
+  end
+end

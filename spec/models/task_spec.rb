@@ -16,12 +16,10 @@ describe Task, type: :model do
 
   describe '#lat' do
     it { should validate_presence_of(:lat) }
-    it { should_not allow_value(100).for(:lat) }
     it { should allow_value(51).for(:lat) }
   end
   describe '#lng' do
     it { should validate_presence_of(:lng) }
-    it { should_not allow_value(100).for(:lng) }
     it { should allow_value(0).for(:lng) }
   end
   describe '#task_type' do

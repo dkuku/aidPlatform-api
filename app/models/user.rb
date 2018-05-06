@@ -31,9 +31,10 @@ class User < ApplicationRecord
     url: "/media/:id/:style/:hash.:extension",
     path: ":rails_root/public/media/:id/:style/:hash.:extension",
     hash_secret: "tamtam"
-  
+
   #validates_attachment :picture, presence: true`
   do_not_validate_attachment_file_type :picture
+
 
   def generate_new_authentcation_token
 	token = User.generate_unique_secure_token
