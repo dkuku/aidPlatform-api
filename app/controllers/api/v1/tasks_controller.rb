@@ -2,7 +2,7 @@ class Api::V1::TasksController < ApplicationController
     before_action :load_task, only: [:show, :update, :destroy]
     before_action :authenticate_with_token!, only: [:create, :show, :update, :destroy]
     def index
-        @tasks = Task.all
+        @tasks = Task.where(done: false)
         json_response "Index tasks successfully", true, {tasks: @tasks}, :ok
     end
 

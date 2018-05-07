@@ -7,6 +7,11 @@ class TaskBroadcastJob < ApplicationJob
 
 
 	def render_stats
-        {unfulfiled: Task.where(done: false).length }
+	{
+	unfulfiled: Task.where(done: false).length,
+	fulfiled: Task.where(done: true).length,
+	users: User.all.length,
+	}
+	
 	end
 end

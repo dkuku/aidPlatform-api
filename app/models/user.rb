@@ -35,6 +35,7 @@ class User < ApplicationRecord
   #validates_attachment :picture, presence: true`
   do_not_validate_attachment_file_type :picture
 
+  after_create_commit { TaskBroadcastJob.perform_later(self) }
 
   def generate_new_authentcation_token
 	token = User.generate_unique_secure_token

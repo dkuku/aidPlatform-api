@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 #      get '/tasks/:task_id', to: 'conversations#index'
       post '/conversations/:conversation_id', to: 'messages#create'
       get '/conversations/:conversation_id', to: 'conversations#index'
+      get '/statistics', to: 'statistics#index'
       devise_scope :user do
         post 	'sign_up', to: 'registrations#create'
         post 	'sign_in', to: 'sessions#create'
