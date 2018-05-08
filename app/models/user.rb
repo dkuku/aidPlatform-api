@@ -3,7 +3,11 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
-  has_many :tasks
+  has_many :tasks, dependent: :destroy
+  has_many :messages
+  has_many :volunteers, class_name: 'Conversation', foreign_key: 'volunteer_id'
+  has_many :task_owners, class_name: 'Conversation', foreign_key: 'task_owner_id'
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
@@ -27,12 +31,18 @@ class User < ApplicationRecord
     url: "/media/:id/:style/:hash.:extension",
     path: ":rails_root/public/media/:id/:style/:hash.:extension",
     hash_secret: "tamtam"
-  
+
   #validates_attachment :picture, presence: true`
   do_not_validate_attachment_file_type :picture
+
+  after_create_commit { TaskBroadcastJob.perform_later(self) }
 
   def generate_new_authentcation_token
 	token = User.generate_unique_secure_token
     update_attributes authentication_token: token
+  end
+
+  def name
+    [first_name, last_name].join(' ')
   end
 end

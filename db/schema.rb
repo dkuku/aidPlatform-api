@@ -10,7 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180413031419) do
+ActiveRecord::Schema.define(version: 20180417225852) do
+
+  create_table "conversations", force: :cascade do |t|
+    t.integer "task_owner_id"
+    t.integer "volunteer_id"
+    t.integer "task_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id"], name: "index_conversations_on_task_id"
+    t.index ["task_owner_id"], name: "index_conversations_on_task_owner_id"
+    t.index ["volunteer_id"], name: "index_conversations_on_volunteer_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.text "body"
+    t.integer "conversation_id"
+    t.integer "volunteer_id"
+    t.integer "task_owner_id"
+    t.integer "task_id"
+    t.boolean "owner", default: false
+    t.boolean "read", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["task_id"], name: "index_messages_on_task_id"
+    t.index ["task_owner_id"], name: "index_messages_on_task_owner_id"
+    t.index ["volunteer_id"], name: "index_messages_on_volunteer_id"
+  end
 
   create_table "tasks", force: :cascade do |t|
     t.string "title"

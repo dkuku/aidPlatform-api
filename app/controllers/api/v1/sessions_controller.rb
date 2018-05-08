@@ -1,7 +1,8 @@
 class Api::V1::SessionsController < Devise::SessionsController
-  before_action :sign_in_params, only: :create
+  before_action :sign_in_params, only: [:create]
+  before_action :user_params, only: [:update]
   before_action :load_user, only: :create
-  before_action :valid_token, only: :destroy
+  before_action :valid_token, only: [:update, :destroy]
   skip_before_action :verify_signed_out_user, only: :destroy
   #sign in
   def create
@@ -16,6 +17,15 @@ class Api::V1::SessionsController < Devise::SessionsController
   def destroy
 	sign_out @user
 	json_response "Log out successfully", true, {}, :ok
+  end
+  
+  def update
+    @user.update user_params
+    if @user.valid? && @user.save
+      json_response "Updated user data", true, {user: @user}, :ok
+    else
+      json_response "Unauthorized", false, {}, :unauthorized 
+    end
   end
 
   private
@@ -32,12 +42,16 @@ class Api::V1::SessionsController < Devise::SessionsController
     end
   end
 
+  def user_params
+    params.require(:user).permit(:email, :password, :password_confirmation, :first_name, :last_name, :picture)
+  end
+
   def valid_token
-	@user = User.find_by authentication_token: request.headers["AUTH-TOKEN"]
-	if @user
-	  return @user
-	else
-	  json_response "Invalid Token", false, {}, failure
-	end
+  	@user = User.find_by authentication_token: request.headers["AUTH-TOKEN"]
+  	if @user
+  	  return @user
+  	else
+  	  json_response "Invalid Token", false, {}, failure
+  	end
   end
 end

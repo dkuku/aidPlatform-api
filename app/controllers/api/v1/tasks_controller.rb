@@ -1,13 +1,17 @@
 class Api::V1::TasksController < ApplicationController
     before_action :load_task, only: [:show, :update, :destroy]
-    before_action :authenticate_with_token!, only: [:create, :update, :destroy]
+    before_action :authenticate_with_token!, only: [:create, :show, :update, :destroy]
     def index
-        @tasks = Task.all
+        @tasks = Task.where(done: false)
         json_response "Index tasks successfully", true, {tasks: @tasks}, :ok
     end
 
     def show
-        json_response "Show task successfully", true, {task: @task}, :ok
+        if current_user.present?
+           json_response "Show task successfully", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
+        else
+           json_response "Show task successfully", true, {task: @task}, :ok
+        end
     end
 
     def create
@@ -16,6 +20,7 @@ class Api::V1::TasksController < ApplicationController
         if task.save
             json_response "Created task successfully", true, {task: task}, :ok
         else
+            puts task.errors.full_messages.first
             json_response task.errors.full_messages.first, false, {}, :unprocessable_entity
         end
     end
@@ -30,6 +35,7 @@ class Api::V1::TasksController < ApplicationController
         else
             json_response "You dont have permission to do this", false, {}, :unauthorized
         end
+
     end
 
     def destroy

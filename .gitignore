@@ -19,6 +19,7 @@
 
 .byebug_history
 /public/media
+vendor/bundle
 
 .env
 *sqlite3

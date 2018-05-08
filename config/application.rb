@@ -29,11 +29,13 @@ module AidPlatformApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+	#for actioncable
+	config.action_cable.disable_request_forgery_protection = true
 
-    config.middleware.insert_before 0, Rack::Cors do
+	config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '*', :headers => :any, :methods => :any
+        resource '*', :headers => :any, :methods => [:get, :post, :patch, :delete, :options]
       end
     end
   end
