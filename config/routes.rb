@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
 #      get '/tasks/:task_id', to: 'conversations#index'
       post '/conversations/:conversation_id', to: 'messages#create'
+      get '/messages/', to: 'messages#index'
       get '/conversations/:conversation_id', to: 'conversations#index'
       get '/statistics', to: 'statistics#index'
       devise_scope :user do

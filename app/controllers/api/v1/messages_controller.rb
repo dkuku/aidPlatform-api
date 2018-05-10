@@ -29,10 +29,18 @@ class Api::V1::MessagesController < ApplicationController
     else   
         json_response "Conversation not found", false, {}, :not_found
     end
-  end
-  private
-  def message_params
-      params.require(:message).permit :body
-  end
+end
+
+    def index
+        if current_user.present?
+            json_response "Your Messages", true, {messages: Message.where(task_owner_id: current_user.id).or(Message.where(volunteer_id: current_user.id)).all}, :ok
+        else
+            json_response "You need to log in ", false, {}, :not_found
+        end
+    end
+    private
+      def message_params
+          params.require(:message).permit :body
+      end
 end
 
