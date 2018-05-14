@@ -8,7 +8,7 @@ class Api::V1::TasksController < ApplicationController
 
     def show
         if current_user.present?
-           json_response "Show task successfully", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name])}, :ok
+           json_response "Show task successfully", true, {task: @task, conversations: @task.conversations.where(volunteer_id: current_user.id).or(@task.conversations.where(task_owner: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name])}, :ok
         else
            json_response "Show task successfully", true, {task: @task}, :ok
         end
