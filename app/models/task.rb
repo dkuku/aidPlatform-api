@@ -1,6 +1,6 @@
 class Task < ApplicationRecord
   has_many :conversations
-  
+  has_many :messages
   allowed_types = ['material', 'help']
   
   belongs_to :user
