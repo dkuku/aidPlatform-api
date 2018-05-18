@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post '/conversations/:conversation_id', to: 'messages#create'
       get '/messages/', to: 'messages#index'
       get '/conversations/:conversation_id', to: 'conversations#index'
+      delete '/conversations/:conversation_id', to: 'conversations#destroy'
       get '/statistics', to: 'statistics#index'
       devise_scope :user do
         post 	'sign_up', to: 'registrations#create'

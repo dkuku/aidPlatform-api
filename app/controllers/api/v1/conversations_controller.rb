@@ -22,22 +22,38 @@ class Api::V1::ConversationsController < ApplicationController
       messages_response(conversation.id)
     elsif @task.user_id == volunteer_id
       json_response "You can't volunteer on your own request", false, {}, :unprocessable_entity
-    elsif @task.fulfilment_counter > 4 || @task.done
+    elsif @task.fulfilment_counter > 4 || @task.done>0
       json_response "You can not volunteer on this task", true, {}, :gone
      #create conversation
     else
-    conversation = Conversation.new conv_params
-    conversation.volunteer_id = volunteer_id
-    conversation.task_owner_id = @task.user_id
-    if conversation.save
-      @task.increment!(:fulfilment_counter)
-      json_response "You can now contact the task Creator", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
-    else
-      json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
+      conversation = Conversation.new conv_params
+      conversation.volunteer_id = volunteer_id
+      conversation.task_owner_id = @task.user_id
+      if conversation.save
+        @task.increment!(:fulfilment_counter)
+        json_response "You can now contact the task Creator", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
+      else
+        json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
+      end
     end
-   end
-end
+  end
 
+  def destroy
+    if current_user.present?
+      if params["conversation_id"].present?
+        if Conversation.find(params["conversation_id"]).task_owner_id == current_user.id || Conversation.find(params["conversation_id"]).volunteer_id == current_user.id
+          task = Task.find(Conversation.find(params["conversation_id"]).task_id)
+          task.update_attributes(done: current_user.id)
+          json_response "Task marked as done", true, {task: task}, :ok
+        else
+         json_response "You are not allowed to change this task", false, {}, :not_found
+        end
+      end
+    else
+      json_response "You need to log in to change this task", false, {}, :unauthenticated
+    end
+  end
+  
   def index
     if current_user.present?
       if params["conversation_id"].present?

@@ -2,17 +2,40 @@ class Api::V1::TasksController < ApplicationController
     before_action :load_task, only: [:show, :update, :destroy]
     before_action :authenticate_with_token!, only: [:create, :show, :update, :destroy]
     def index
-        @tasks = Task.where(done: false)
+        @tasks = Task.where(done: 0)
         json_response "Index tasks successfully", true, {tasks: @tasks}, :ok
     end
 
+#    def show
+#        if current_user.present?
+#           json_response "Show task successfully", true, {
+#            task: @task, 
+#            conversations: @task.conversations.where(volunteer_id: current_user.id).or(@task.conversations.where(task_owner: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name])
+#            messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)),
+#        }, :ok
+#        else
+#           json_response "Show task successfully", true, {task: @task}, :ok
+#        end
+#    end
     def show
-        if current_user.present?
+        if current_user.present? 
+            if current_user.id == @task.user_id
+                json_response "Show task successfully", true, {
+                    task: @task, 
+                    conversations: @task.conversations.includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
+                    messages: Message.where(task_id: @task.id), }, :ok
+            #    @task.as_json(:include => { :conversations => {
+            #        :include => { :messages => {
+            #                        :only => [:body, :owner, :read] } },
+            #        :only => :id, methods: [:volunteer_name] }} ), :ok
+            else 
            json_response "Show task successfully", true, {
             task: @task, 
+            conversations: @task.conversations.where(volunteer_id: current_user.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
             messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)),
-            conversations: @task.conversations.where(volunteer_id: current_user.id).or(@task.conversations.where(task_owner: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name])
         }, :ok
+
+            end
         else
            json_response "Show task successfully", true, {task: @task}, :ok
         end
@@ -65,6 +88,6 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
-        params.require(:task).permit :title, :description, :lat, :lng, :task_type
+        params.require(:task).permit :title, :description, :lat, :lng, :task_type, :done
     end
 end

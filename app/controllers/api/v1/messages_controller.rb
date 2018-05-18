@@ -13,13 +13,14 @@ class Api::V1::MessagesController < ApplicationController
             message.body = message_params["body"]
             message.conversation_id = conv_id
             message.task_owner_id = conv.task_owner_id
+            message.task_id = conv.task_id
             message.volunteer_id = conv.volunteer_id
             if conv.task_owner_id == user_id
               message.owner = true
             end
             puts message.to_json
             if message.save
-                json_response "message created", true, {messages: Message.where(conversation_id: conv_id)  }, :ok
+                json_response "message created", true, {messages: message  }, :ok
             else
                 json_response "Something wrong", false, {}, :unprocessable_entity
             end
