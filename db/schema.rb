@@ -44,13 +44,12 @@ ActiveRecord::Schema.define(version: 20180417225852) do
     t.text "description"
     t.decimal "lat"
     t.decimal "lng"
-    t.boolean "done", default: false
+    t.integer "done", default: 0
+    t.string "task_type"
     t.integer "fulfilment_counter", default: 0
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "task_type"
-    t.boolean "status"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
