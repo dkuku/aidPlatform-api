@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       get '/conversations/:conversation_id', to: 'conversations#index'
       delete '/conversations/:conversation_id', to: 'conversations#destroy'
       get '/statistics', to: 'statistics#index'
+      post '/tasks/within', to: 'tasks#within'
       devise_scope :user do
         post 	'sign_up', to: 'registrations#create'
         post 	'sign_in', to: 'sessions#create'

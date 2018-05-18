@@ -15,6 +15,8 @@ class Task < ApplicationRecord
   validates_inclusion_of :task_type, { in: allowed_types, 
   message: "we don't support this type of request" }
 
+  geocoded_by :address, :latitude => :lat, :longitude => :lng
+
   validates :lat, numericality: { only_integer: false}
 
   validates :lng, numericality: { only_integer: false}

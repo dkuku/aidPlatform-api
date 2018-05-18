@@ -42,8 +42,8 @@ ActiveRecord::Schema.define(version: 20180417225852) do
   create_table "tasks", force: :cascade do |t|
     t.string "title"
     t.text "description"
-    t.decimal "lat"
-    t.decimal "lng"
+    t.float "lat"
+    t.float "lng"
     t.integer "done", default: 0
     t.string "task_type"
     t.integer "fulfilment_counter", default: 0

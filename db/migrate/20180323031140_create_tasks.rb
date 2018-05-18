@@ -3,8 +3,8 @@ class CreateTasks < ActiveRecord::Migration[5.1]
     create_table :tasks do |t|
       t.string :title
       t.text :description
-      t.decimal :lat
-      t.decimal :lng
+      t.float :lat
+      t.float :lng
       t.integer :done, default: 0
       t.string :task_type 
       t.integer :fulfilment_counter, default: 0

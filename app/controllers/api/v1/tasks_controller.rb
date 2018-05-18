@@ -1,6 +1,7 @@
 class Api::V1::TasksController < ApplicationController
     before_action :load_task, only: [:show, :update, :destroy]
     before_action :authenticate_with_token!, only: [:create, :show, :update, :destroy]
+    before_action :tasks_by_bounds, only: [:within]
     def index
         @tasks = Task.where(done: 0)
         json_response "Index tasks successfully", true, {tasks: @tasks}, :ok
@@ -77,8 +78,19 @@ class Api::V1::TasksController < ApplicationController
         end
 
     end
+    def within
+        json_response "Show task successfully", true, {tasks: @task}, :ok
+    end
 
     private
+
+    def tasks_by_bounds
+        box = [task_params[:south], task_params[:west],task_params[:north], task_params[:east]]
+        @task = Task.where(done: 0).within_bounding_box(box)
+        unless @task.present?
+            json_response "Cannot find task", false, {}, :not_found
+        end
+    end
 
     def load_task
         @task = Task.find_by id: params[:id]
@@ -88,6 +100,6 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
-        params.require(:task).permit :title, :description, :lat, :lng, :task_type, :done
+        params.require(:task).permit :title, :description, :lat, :lng, :task_type, :done, :south, :east, :north, :west
     end
 end
