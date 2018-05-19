@@ -1,10 +1,27 @@
 class Api::V1::TasksController < ApplicationController
     before_action :load_task, only: [:show, :update, :destroy]
-    before_action :authenticate_with_token!, only: [:create, :show, :update, :destroy]
+    before_action :authenticate_with_token!, only: [:create, :show, :update, :destroy, :get]
     before_action :tasks_by_bounds, only: [:within]
     def index
-        @tasks = Task.where(done: 0)
-        json_response "Index tasks successfully", true, {tasks: @tasks}, :ok
+        if current_user.present?
+            @tasks = Task.where(user_id: current_user.id)
+            @tasks_volunteer = Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}),
+            unless @tasks.present?
+                json_response "Cannot find task", true, {}, :ok
+            end
+            json_response "Index tasks successfully", true, {
+                tasks: {unfulfiled: @tasks.where(done: 0, fulfilment_counter: [0,1,2,3,4]),
+                fulfiled: @tasks.where(done: 1),
+                active: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}, tasks: {done: 0}),
+                closed: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}, tasks: {done: 1}),
+                }}, :ok
+        else
+            @tasks = Task.where(done: 0)
+            unless @tasks.present?
+                json_response "Cannot find task", true, {}, :ok
+            end
+            json_response "Index tasks successfully", true, {tasks: @tasks}, :ok
+        end
     end
 
 #    def show
