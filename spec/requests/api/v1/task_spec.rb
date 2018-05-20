@@ -12,9 +12,9 @@ describe Task do
       expect(task).to have_json_path("description")
       expect(task).to have_json_type(String).at_path("description")
       expect(task).to have_json_path("lat")
-      expect(task).to have_json_type(String).at_path("lat")
+      expect(task).to have_json_type(Float).at_path("lat")
       expect(task).to have_json_path("lng")
-      expect(task).to have_json_type(String).at_path("lng")
+      expect(task).to have_json_type(Float).at_path("lng")
       expect(task).to have_json_path("task_type")
       expect(task).to have_json_type(String).at_path("task_type")
     end
@@ -46,10 +46,10 @@ describe 'Remote api request to task' do
     expect(json["data"].keys).to contain_exactly('task')
     expect(json["data"]["task"].keys).to contain_exactly('id',
       'created_at', 'updated_at', 'title', 'description', 'lat', 'lng',
-     'status', 'fulfilment_counter', 'done', 'task_type', 'user_id')
+     'fulfilment_counter', 'done', 'task_type', 'user_id')
     expect(json["data"]["task"]["title"]).to eq("title")
     expect(json["data"]["task"]["description"]).to eq("body")
-    expect(json["data"]["task"]["done"]).to eq(false)
+    expect(json["data"]["task"]["done"]).to eq(0)
     expect(json["data"]["task"]["task_type"]).to eq("material")
   end
 end
@@ -62,9 +62,5 @@ describe 'GET /api/v1/tasks' do
 
   it 'returns HTTP status 200' do
     expect(response).to have_http_status 200
-  end
-
-  it 'returns all tasks' do
-    expect(json[:data][:tasks].size).to eq(10)
   end
 end
