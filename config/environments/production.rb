@@ -17,4 +17,6 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
   config.active_record.dump_schema_after_migration = false
+  config.web_socket_server_url = "wss://neighboorhelp.herokuapp.com/cable" 
+  config.action_cable.allowed_request_origins = ['https://neighboorhelp.herokuapp.com', 'http://neighboorhelp.herokuapp.com']
 end
