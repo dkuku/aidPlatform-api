@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20180417225852) do
 
   create_table "tasks", force: :cascade do |t|
     t.string "title"
+    t.string "address"
     t.text "description"
     t.float "lat"
     t.float "lng"

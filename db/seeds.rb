@@ -31,6 +31,7 @@ end
     lng: Faker::Number.normal(-0.2, 0.2),
     user_id: counter,
     task_type: "material",
+    address: 'London',
     done: false
     (0..3).each do |conver|
         Conversation.create(volunteer_id: conver+ counter+1 , task_owner_id: counter, task_id: counter)
@@ -52,6 +53,7 @@ end
         lng: Faker::Number.normal(-0.2, 0.2),
         user_id: [1,2].sample,
         task_type: ["material", "help"].sample,
+        address: 'London',
         done: Faker::Boolean.boolean,
         fulfilment_counter: Faker::Number.between(0,5)
 end
@@ -62,6 +64,7 @@ end
         lng: Faker::Number.normal(-0.2, 0.2),
         user_id: Faker::Number.between(1,10),
         task_type: ["material", "help"].sample,
+        address: 'London',
         done: Faker::Boolean.boolean,
         fulfilment_counter: Faker::Number.between(0,5)
 end
