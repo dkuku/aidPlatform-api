@@ -31,7 +31,7 @@ class Api::V1::ConversationsController < ApplicationController
       conversation.task_owner_id = @task.user_id
       if conversation.save
         @task.increment!(:fulfilment_counter)
-        json_response "You can now contact the task Creator", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
+      json_response "You can now contact the task Creator", true, {task: @task, conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])}, :ok
       else
         json_response "Error finding or creating conversation", false, {}, :unprocessable_entity
       end

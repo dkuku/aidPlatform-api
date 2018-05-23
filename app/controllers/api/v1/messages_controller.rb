@@ -20,7 +20,7 @@ class Api::V1::MessagesController < ApplicationController
             end
             puts message.to_json
             if message.save
-                json_response "message created", true, {message: message  }, :ok
+              json_response "message created", true, {message: message  }, :ok
             else
                 json_response "Something wrong", false, {}, :unprocessable_entity
             end

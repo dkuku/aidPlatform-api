@@ -5,4 +5,6 @@ class Message < ApplicationRecord
    def message_time
      created_at.strftime("%m/%d/%y at %l:%M %p")
    end
-end
+  after_create_commit { MessageBroadcastJob.perform_later(self) }
+end 
+

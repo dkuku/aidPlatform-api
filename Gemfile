@@ -61,5 +61,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise', '>= 4.4'
 gem 'simple_token_authentication', '~> 1.0'
 gem 'redis'
-
 ruby '2.5.1'

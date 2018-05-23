@@ -7,8 +7,8 @@ end
 
 def render_stats
 	{
-	unfulfiled: Task.where(done: false).length,
-	fulfiled: Task.where(done: true).length,
-	users: User.all.length
+	unfulfiled: Task.where(done: false).count,
+	fulfiled: Task.where(done: true).count,
+	users: User.all.count
   }
 end

@@ -21,5 +21,5 @@ Rails.application.routes.draw do
       resources :conversations, only: [:index, :show, :create, :destroy]
     end
   end
-  mount ActionCable.server, at: '/stats'
+  mount ActionCable.server, at: '/cable'
 end
