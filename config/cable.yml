@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: redis://localhost:6379/1
+  url: redis://h:p842b270ae09c7aea942bf75aa5622f7f5c70abaad22186575052f88d2fecbcc6@ec2-35-174-163-24.compute-1.amazonaws.com:1119
   channel_prefix: aidPlatform-api_production
