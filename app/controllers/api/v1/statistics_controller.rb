@@ -1,7 +1,7 @@
 class Api::V1::StatisticsController < ApplicationController
 
   def index
-      json_response "Current server statistics", true, render_stats, :ok
+    json_response "Current server statistics", true, render_stats, :ok
   end
 end
 
