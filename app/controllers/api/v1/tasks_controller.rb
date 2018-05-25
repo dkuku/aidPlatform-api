@@ -13,7 +13,7 @@ class Api::V1::TasksController < ApplicationController
                 tasks: {unfulfiled: @tasks.where(done: 0, fulfilment_counter: [0,1,2,3,4]),
                 fulfiled: @tasks.where(done: 1),
                 active: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}, tasks: {done: 0}),
-                closed: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}, tasks: {done: 1}),
+                closed: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}).where.not(done: 0),
                 }}, :ok
         else
             @tasks = Task.where(done: 0)
@@ -89,9 +89,6 @@ class Api::V1::TasksController < ApplicationController
     def tasks_by_bounds
         box = [task_params[:south], task_params[:west],task_params[:north], task_params[:east]]
         @task = Task.where(done: 0).within_bounding_box(box)
-        unless @task.present?
-            json_response "Cannot find task", false, {}, :not_found
-        end
     end
 
     def load_task
