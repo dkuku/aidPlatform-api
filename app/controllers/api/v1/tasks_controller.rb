@@ -14,7 +14,9 @@ class Api::V1::TasksController < ApplicationController
                 fulfiled: @tasks.where(done: 1),
                 active: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}, tasks: {done: 0}),
                 closed: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}).where.not(done: 0),
-                }}, :ok
+                }, 
+                updated: Time.now
+                }, :ok
         else
             @tasks = Task.where(done: 0)
             unless @tasks.present?
@@ -30,12 +32,12 @@ class Api::V1::TasksController < ApplicationController
                 json_response "Show task successfully", true, {
                     task: @task, 
                     conversations: @task.conversations.includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
-                    messages: Message.where(task_id: @task.id), }, :ok
+                    messages: Message.where(task_id: @task.id).reverse_order, }, :ok
             else 
            json_response "Show task successfully", true, {
             task: @task, 
             conversations: @task.conversations.where(volunteer_id: current_user.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
-            messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)),
+            messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)).reverse_order,
         }, :ok
 
             end
