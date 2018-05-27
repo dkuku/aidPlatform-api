@@ -51,8 +51,8 @@ class Api::V1::ConversationsController < ApplicationController
   def destroy
     if current_user.present?
       if params["conversation_id"].present?
-        if Conversation.find(params["conversation_id"]).task_owner_id == current_user.id || Conversation.find(params["conversation_id"]).volunteer_id == current_user.id
-          task = Task.find(Conversation.find(params["conversation_id"]).task_id)
+          task = Task.find(params['conversation_id'])
+        if task.conversations.where(task_owner_id: current_user.id)or(task.conversations.where(volunteer_id: current_user.id))
           task.update_attributes(done: current_user.id)
           json_response "Task marked as done", true, {task: task}, :ok
         else

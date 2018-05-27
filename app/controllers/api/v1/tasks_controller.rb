@@ -71,7 +71,7 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def destroy
-        if correct_user @task.user
+        if current_user @task.user
             if @task.destroy
                 json_response "Deleted task successfully", true, {task: @task}, :ok
             else
