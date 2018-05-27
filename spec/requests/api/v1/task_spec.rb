@@ -46,7 +46,7 @@ describe 'Remote api request to task' do
     expect(json["data"].keys).to contain_exactly('task')
     expect(json["data"]["task"].keys).to contain_exactly('id',
       'created_at', 'updated_at', 'title', 'description', 'lat', 'lng',
-     'fulfilment_counter', 'done', 'task_type', 'user_id')
+     'fulfilment_counter', 'done', 'task_type', 'user_id', 'address')
     expect(json["data"]["task"]["title"]).to eq("title")
     expect(json["data"]["task"]["description"]).to eq("body")
     expect(json["data"]["task"]["done"]).to eq(0)

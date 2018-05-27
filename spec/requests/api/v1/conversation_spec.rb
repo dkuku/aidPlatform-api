@@ -59,9 +59,9 @@ describe 'Remote api request to conversation' do
     expect(response).to have_http_status(200)
     json = JSON.parse(response.body)
     expect(json).not_to be_empty
-    expect(json["messages"]).to eq("Messages in this conversation")
+    expect(json["messages"]).to eq("You can now contact the task Creator")
     expect(json["is_success"]).to eq(true)
-    expect(json["data"].keys).to contain_exactly('messages')
+    expect(json["data"].keys).to contain_exactly('messages', "conversation", "task")
 
     get '/api/v1/conversations/1/', :headers => headers
     expect(response).to have_http_status(200)
