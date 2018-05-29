@@ -37,7 +37,7 @@ class Api::V1::TasksController < ApplicationController
            json_response "Show task successfully", true, {
             task: @task, 
             conversations: @task.conversations.where(volunteer_id: current_user.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
-            messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)).reverse_order,
+            messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)).reverse_order!,
         }, :ok
 
             end
@@ -48,6 +48,7 @@ class Api::V1::TasksController < ApplicationController
 
     def create
         task = Task.new task_params
+        task.done = 0
         task.user_id = current_user.id
         if task.save
             json_response "Created task successfully", true, {task: task}, :ok
