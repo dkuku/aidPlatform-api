@@ -10,7 +10,7 @@ class Api::V1::ConversationsController < ApplicationController
       conversation = Conversation.between(volunteer_id, @task.id).first
       json_response "Conversation already exist", true, {
         task: Task.find(conversation.id),
-        conversation: Conversation.find(conversation.id),
+        conversation: Conversation.where(id: conversation.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
         messages: Message.where(conversation_id: conversation.id),
         }, :ok
     else
@@ -25,9 +25,8 @@ class Api::V1::ConversationsController < ApplicationController
       conversation = Conversation.between(volunteer_id, @task.id).first
       json_response "Conversation already exist", true, {
         task: Task.find(conversation.id),
-        conversation: Conversation.find(conversation.id),
+        conversation: Conversation.where(id: conversation.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
         messages: Message.where(conversation_id: conversation.id),
-        #conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])
         }, :ok
     elsif @task.user_id == volunteer_id
       json_response "You can't volunteer on your own request", false, {}, :unprocessable_entity
@@ -42,7 +41,7 @@ class Api::V1::ConversationsController < ApplicationController
         @task.increment!(:fulfilment_counter)
       json_response "You can now contact the task creator", true, {
         task: @task,
-        conversation: Conversation.find(conversation.id),
+        conversation: Conversation.where(id: conversation.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
         messages: [],
         #conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])
         }, :ok
