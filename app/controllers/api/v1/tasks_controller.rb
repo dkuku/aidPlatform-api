@@ -101,6 +101,7 @@ class Api::V1::TasksController < ApplicationController
     end
 
     def task_params
+        puts params.to_json
         params.require(:task).permit :title, :description, :lat, :lng, :task_type, :done, :address, :south, :east, :north, :west
     end
 end
