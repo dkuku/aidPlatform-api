@@ -8,7 +8,11 @@ class Api::V1::ConversationsController < ApplicationController
     #check if conversation exist if yes load it
     if Conversation.between(volunteer_id, @task.id).present?
       conversation = Conversation.between(volunteer_id, @task.id).first
-      messages_response(conversation.id)
+      json_response "Conversation already exist", true, {
+        task: Task.find(conversation.id),
+        conversation: Conversation.find(conversation.id),
+        messages: Message.where(conversation_id: conversation.id),
+        }, :ok
     else
       #if not check if user dont volunteer on his own task
       json_response "Error finding conversation", false, {}, :not_found
@@ -19,10 +23,10 @@ class Api::V1::ConversationsController < ApplicationController
     volunteer_id = current_user.id
     if Conversation.between(volunteer_id, @task.id).present?
       conversation = Conversation.between(volunteer_id, @task.id).first
-      json_response "You can now contact the task Creator", true, {
+      json_response "Conversation already exist", true, {
         task: Task.find(conversation.id),
-        conversation: conversation,
-        messages: conversation.messages,
+        conversation: Conversation.find(conversation.id),
+        messages: Message.where(conversation_id: conversation.id),
         #conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])
         }, :ok
     elsif @task.user_id == volunteer_id
@@ -36,10 +40,10 @@ class Api::V1::ConversationsController < ApplicationController
       conversation.task_owner_id = @task.user_id
       if conversation.save
         @task.increment!(:fulfilment_counter)
-      json_response "You can now contact the task Creator", true, {
+      json_response "You can now contact the task creator", true, {
         task: @task,
-        conversation: conversation,
-        messages: conversation.messages,
+        conversation: Conversation.find(conversation.id),
+        messages: [],
         #conversations: @task.conversations.where(task_owner_id: current_user.id).or(@task.conversations.where(volunteer_id: current_user.id)).includes([:task_owner, :volunteer]).as_json(only: [:id], methods: [:task_owner_name, :volunteer_name])
         }, :ok
       else
@@ -74,7 +78,7 @@ class Api::V1::ConversationsController < ApplicationController
         end
       end
     else
-      json_response "You Need to log in to view conversations", false, {}, :unauthenticated
+      json_response "You need to log in to view conversations", false, {}, :unauthenticated
     end
   end
 
