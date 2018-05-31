@@ -49,17 +49,16 @@ describe 'Remote api request to conversation' do
     conversation = attributes_for(:conversation)
     token = JSON.parse(user2)["authentication_token"]
     headers = {'AUTH-TOKEN': token}
-    post '/api/v1//conversations', :params => {conversation: conversation}, :headers => headers
+    post '/api/v1/conversations', :params => {conversation: conversation}, :headers => headers
     expect(response).to have_http_status(200)
     json = JSON.parse(response.body)
+    expect(json["messages"]).to eq("You can now contact the task creator")
     expect(json).not_to be_empty
-    expect(json["messages"]).to eq("You can now contact the task Creator")
-
     post '/api/v1/conversations', :params => {conversation: conversation}, :headers => headers
     expect(response).to have_http_status(200)
     json = JSON.parse(response.body)
     expect(json).not_to be_empty
-    expect(json["messages"]).to eq("You can now contact the task Creator")
+    expect(json["messages"]).to eq("Conversation already exist")
     expect(json["is_success"]).to eq(true)
     expect(json["data"].keys).to contain_exactly('messages', "conversation", "task")
 
