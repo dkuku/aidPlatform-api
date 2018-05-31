@@ -11,7 +11,7 @@ class Api::V1::TasksController < ApplicationController
             end
             json_response "Index tasks successfully", true, {
                 tasks: {unfulfiled: @tasks.where(done: 0, fulfilment_counter: [0,1,2,3,4]),
-                fulfiled: @tasks.where(done: 1),
+                fulfiled: @tasks.where.not(done: 0),
                 active: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}, tasks: {done: 0}),
                 closed: Task.includes(:conversations).where(conversations: {volunteer_id: current_user.id}).where.not(done: 0),
                 }, 
@@ -29,20 +29,20 @@ class Api::V1::TasksController < ApplicationController
     def show
         if current_user.present? 
             if current_user.id == @task.user_id
-                json_response "Show task successfully", true, {
+                json_response "Show task successfully for current user", true, {
                     task: @task, 
-                    conversations: @task.conversations.includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
+                    conversation: @task.conversations.includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
                     messages: Message.where(task_id: @task.id).reverse_order, }, :ok
             else 
-           json_response "Show task successfully", true, {
+           json_response "Show task successfully for volunteer", true, {
             task: @task, 
-            conversations: @task.conversations.where(volunteer_id: current_user.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
+            conversation: @task.conversations.where(volunteer_id: current_user.id).includes([:task_owner, :volunteer]).as_json(only: [:id, :task_id], methods: [:task_owner_name, :volunteer_name]),
             messages: @task.messages.where(volunteer_id: current_user.id).or(@task.messages.where(task_owner_id: current_user.id)).reverse_order,
         }, :ok
 
             end
         else
-           json_response "Show task successfully", true, {task: @task}, :ok
+           json_response "Show task successfully for anonymous", true, {task: @task}, :ok
         end
     end
 
