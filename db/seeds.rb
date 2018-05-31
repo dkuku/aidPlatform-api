@@ -55,7 +55,7 @@ end
         task_type: ["material", "help"].sample,
         address: 'London',
         done: Faker::Boolean.boolean,
-        fulfilment_counter: Faker::Number.between(0,5)
+        fulfilment_counter: Faker::Number.between(0,4)
 end
 80.times do |n|
     Task.create! title: Faker::Book.title,
